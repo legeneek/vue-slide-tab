@@ -54,7 +54,8 @@ export default {
   },
   mounted() {
     this.tabWidth = this.containerWidth || this.$el.offsetWidth || window.innerWidth
-    this.minLeft = (this.wrapperWidth - this.tabWidth) * -1
+    const diff= this.wrapperWidth - this.tabWidth
+    this.minLeft = diff > 0 ? diff * -1 : 0
     this.cur = (this.current >= 0 && this.current < this.tabs.length) ? this.current : 0
     this.setLeftByIndex(this.cur)
   },

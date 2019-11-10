@@ -1,6 +1,6 @@
 {
   "name": "vue-slide-tab",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "vue slide tab for mobile",
   "main": "dist/vue-slide-tab.umd.js",
   "module": "dist/vue-slide-tab.esm.js",
