@@ -19,6 +19,11 @@ npm run start
 ## usage
 
 ```
+// main.js
+import VueSlideTab from 'vue-slide-tab'
+Vue.component('VueSlideTab', VueSlideTab)
+
+// sfc.vue
 <template>
   <VueSlideTab :tabs="tabs" :itemWidth="100" :current="cur" @tabClick="tabClick">
     <template v-slot:tab="{ tab, active }">
