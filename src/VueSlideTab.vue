@@ -55,22 +55,19 @@ export default {
   mounted() {
     this.tabWidth = this.containerWidth || this.$el.offsetWidth || window.innerWidth
     this.minLeft = (this.wrapperWidth - this.tabWidth) * -1
-    const cur = (this.current >= 0 && this.current < this.tabs.length) ? this.current : 0
-    this.cur = cur
-    this.setLeftByIndex(cur)
+    this.cur = (this.current >= 0 && this.current < this.tabs.length) ? this.current : 0
+    this.setLeftByIndex(this.cur)
   },
   methods: {
     setLeftByIndex(index) {
-      // 被点击tab的中点向整个tab的中点靠拢
+      // move content's midpoint towards tab's midpoint
       const halfItem = this.itemWidth / 2
       const halfTab = this.tabWidth / 2
       const pos = halfItem + index * this.itemWidth
       let left = pos - halfTab
       if (left < 0) {
-        // 点击的item中点在tab中点的左侧时不用处理
         this.left = 0
       } else if (left > Math.abs(this.minLeft)) {
-        // 超出可移动动的范围时不用处理
         this.left = this.minLeft
       } else {
         this.left = left * -1
@@ -101,7 +98,7 @@ export default {
       this.$emit('tabClick', index)
     }
   }
-};
+}
 </script>
 
 <style lang="less">

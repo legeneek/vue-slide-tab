@@ -2,7 +2,9 @@
   "name": "vue-slide-tab",
   "version": "1.0.0",
   "description": "vue slide tab for mobile",
-  "main": "index.js",
+  "main": "dist/vue-slide-tab.umd.js",
+  "module": "dist/vue-slide-tab.esm.js",
+  "unpkg": "dist/vue-slide-tab.js",
   "scripts": {
     "start": "webpack-dev-server --config ./build/webpack.config.js",
     "build": "npm run build:umd & npm run build:es & npm run build:unpkg",
