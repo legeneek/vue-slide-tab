@@ -2,7 +2,7 @@
   <div class="slide-tab" :style="tabStyle">
     <div :class="[motion ? 'motion' : '', 'tab-wrapper']" :style="wrapperStyle" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
       <div v-for="(tab, index) in tabs" :key="index" class="tab-item" @click="tabClick(index)">
-        <slot name="tab" :tab="tab" :active="cur === index">{{ tab.name }}</slot>
+        <slot name="tab" :tab="tab" :active="cur === index"></slot>
       </div>
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     tabStyle() {
-      return `width: ${this.tabWidth}px;`
+      return this.tabWidth ? `width: ${this.tabWidth}px;` : ''
     },
     wrapperWidth() {
       return this.tabs.length * this.itemWidth
@@ -53,7 +53,7 @@ export default {
     }
   },
   mounted() {
-    this.tabWidth = this.containerWidth || this.$el.offsetWidth || window.innerWidth
+    this.tabWidth = this.containerWidth || this.$el.offsetWidth
     const diff= this.wrapperWidth - this.tabWidth
     this.minLeft = diff > 0 ? diff * -1 : 0
     this.cur = (this.current >= 0 && this.current < this.tabs.length) ? this.current : 0
@@ -105,6 +105,7 @@ export default {
 <style lang="less">
 .slide-tab {
   overflow: hidden;
+  width: 100%;
   .tab-wrapper {
     display: flex;
     &.motion {

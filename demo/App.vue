@@ -13,12 +13,11 @@
 
 import Vue from 'vue'
 import VueSlideTab from "../src/index"
+Vue.use(VueSlideTab)
+// Vue.component('VueSlideTab', VueSlideTab.component)
 
 export default {
   name: "app",
-  components: {
-    VueSlideTab
-  },
   data() {
     return {
       cur: 4,

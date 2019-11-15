@@ -21,7 +21,10 @@ npm run start
 ```
 // main.js
 import VueSlideTab from 'vue-slide-tab'
-Vue.component('VueSlideTab', VueSlideTab)
+// use as plugin
+Vue.use(VueSlideTab)
+// use as component
+Vue.component('VueSlideTab', VueSlideTab.component)
 
 // sfc.vue
 <template>
@@ -40,7 +43,7 @@ scoped slot tab can get tab item data `tab` and select state `active` from scope
 
 | Property | Type | Required? | Description 
 |:---|:---|:---|:---|
-| tabs | Array | yes | tab data array, tab object at least contain name prop: `[{ name:  'a'}]` 
+| tabs | Array | yes | tab data array
 | itemWidth | Number | yes | tab item width 
 | current | Number | no | current tab index start from 0 
 | containerWidth | Number | no | tab container width 
