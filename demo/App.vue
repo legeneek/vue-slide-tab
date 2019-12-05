@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <VueSlideTab :tabs="tabs" :itemWidth="100" :current="cur" @tabClick="tabClick">
-      <template v-slot:tab="{ tab, active }">
-        <div :class="[active ? 'active' : '', 'list-tab']">{{ `tab:${tab.name}` }}</div>
+    <VueSlideTab :tabs="tabs" :current="cur" @tabClick="tabClick">
+      <template v-slot:tab="{ tab, index }">
+        <div :class="[ cur === index ? 'active' : '', 'list-tab']">{{ `tab:${tab.name}` }}</div>
       </template>
     </VueSlideTab>
     <div>{{ `current tab: ${tabs[cur].name}` }}</div>
@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       cur: 4,
-      tabs: [{ name: "a" }, { name: "b" }, { name: "c" },{ name: "d" }, { name: "e" }, { name: "f" }],
+      tabs: [{ name: "a" }, { name: "b" }, { name: "c" },{ name: "d" }, { name: "e" }, { name: "f" }]
     }
   },
   methods: {
@@ -45,6 +45,7 @@ body {
 }
 .list-tab {
   border: 1px solid #675ccc;
+  width: 100px;
   &.active {
     color: #f00;
   }

@@ -1,8 +1,20 @@
 <template>
-  <div class="slide-tab" :style="tabStyle">
-    <div :class="[motion ? 'motion' : '', 'tab-wrapper']" :style="wrapperStyle" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
-      <div v-for="(tab, index) in tabs" :key="index" class="tab-item" @click="tabClick(index)">
-        <slot name="tab" :tab="tab" :active="cur === index"></slot>
+  <div class="slide-tab" :style="tabStyle" :dir="dir" >
+    <div
+      ref="wrapper"
+      :class="[motion ? 'motion' : '', 'tab-wrapper']"
+      :style="wrapperStyle"
+      @touchstart="touchStart"
+      @touchmove="touchMove"
+      @touchend="touchEnd"
+    >
+      <div
+        v-for="(tab, index) in tabs"
+        :key="index"
+        class="tab-item"
+        @click="tabClick($event, index)"
+      >
+        <slot name="tab" :tab="tab" :index="index" />
       </div>
     </div>
   </div>
@@ -13,21 +25,15 @@ export default {
   props: {
     tabs: {
       require: true,
-      type: Array,
-      default: () => []
+      type: Array
     },
     current: {
-      type: Number,
-      default: () => 0
-    },
-    itemWidth: {
       require: true,
-      type: Number,
-      default: () => 0
+      type: Number
     },
-    containerWidth: {
-      type: Number,
-      default: () => 0
+    dir: {
+      type: String,
+      default: () => 'ltr'
     }
   },
   data() {
@@ -37,35 +43,51 @@ export default {
       left: 0,
       motion: false,
       preX: 0,
-      cur: 0
+      wrapperWidth: 0
     }
   },
   computed: {
+    dirFlag() {
+      return this.dir === 'ltr' ? 1 : -1
+    },
     tabStyle() {
       return this.tabWidth ? `width: ${this.tabWidth}px;` : ''
     },
-    wrapperWidth() {
-      return this.tabs.length * this.itemWidth
-    },
     wrapperStyle() {
-      const l = this.left + 'px'
-      return `width: ${this.wrapperWidth}px; transform: translate3d(${l}, 0, 0);`
+      const l = this.left * this.dirFlag + 'px'
+      return `transform: translate3d(${l}, 0, 0);`
+    }
+  },
+  watch: {
+    current(v) {
+      this.setCurrentTab(v)
     }
   },
   mounted() {
-    this.tabWidth = this.containerWidth || this.$el.offsetWidth
-    const diff= this.wrapperWidth - this.tabWidth
-    this.minLeft = diff > 0 ? diff * -1 : 0
-    this.cur = (this.current >= 0 && this.current < this.tabs.length) ? this.current : 0
-    this.setLeftByIndex(this.cur)
+    this.init()
+    this.setCurrentTab(this.current)
+  },
+  updated() {
+    this.init()
   },
   methods: {
-    setLeftByIndex(index) {
-      // move content's midpoint towards tab's midpoint
-      const halfItem = this.itemWidth / 2
-      const halfTab = this.tabWidth / 2
-      const pos = halfItem + index * this.itemWidth
-      let left = pos - halfTab
+    init() {
+      this.tabWidth = this.$el.offsetWidth
+      this.wrapperWidth = this.$refs.wrapper.offsetWidth
+      const diff = this.wrapperWidth - this.tabWidth
+      this.minLeft = diff > 0 ? diff * -1 : 0
+    },
+    setCurrentTab(index) {
+      if (index >= 0 && index < this.tabs.length) {
+        const dom = this.$refs.wrapper.children[index]
+        if (dom) {
+          this.setLeftByDom(dom)
+        }
+      }
+    },
+    setLeftByDom(dom) {
+      const pos = this.dir === 'rtl' ? (this.wrapperWidth - dom.offsetLeft - dom.offsetWidth / 2) : (dom.offsetLeft + dom.offsetWidth / 2)
+      const left = pos - this.tabWidth / 2
       if (left < 0) {
         this.left = 0
       } else if (left > Math.abs(this.minLeft)) {
@@ -79,7 +101,7 @@ export default {
       this.preX = e.touches[0].pageX
     },
     touchMove(e) {
-      let left = this.left + e.touches[0].pageX - this.preX
+      const left = this.left + (e.touches[0].pageX - this.preX) * this.dirFlag
       if (left >= 0) {
         this.left = 0
       } else if (left <= this.minLeft) {
@@ -92,10 +114,9 @@ export default {
     touchEnd() {
       this.motion = true
     },
-    tabClick(index) {
+    tabClick(e, index) {
       this.motion = true
-      this.cur = index
-      this.setLeftByIndex(index)
+      this.setCurrentTab(index)
       this.$emit('tabClick', index)
     }
   }
@@ -105,15 +126,17 @@ export default {
 <style lang="less">
 .slide-tab {
   overflow: hidden;
-  width: 100%;
   .tab-wrapper {
-    display: flex;
+    display: inline-block;
+    white-space: nowrap;
+    will-change: transform;
     &.motion {
-      transition: all .3s;
+      transition: all 0.3s;
     }
     .tab-item {
+      vertical-align: top;
       box-sizing: border-box;
-      flex: 1;
+      display: inline-block;
     }
   }
 }

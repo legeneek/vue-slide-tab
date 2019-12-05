@@ -28,25 +28,22 @@ Vue.component('VueSlideTab', VueSlideTab.component)
 
 // sfc.vue
 <template>
-  <VueSlideTab :tabs="tabs" :itemWidth="100" :current="cur" @tabClick="tabClick">
-    <template v-slot:tab="{ tab, active }">
-      <div :class="[active ? 'active' : '', 'list-tab']">{{ `tab:${tab.name}` }}</div>
+  <VueSlideTab :tabs="tabs" :current="cur" @tabClick="tabClick">
+    <template v-slot:tab="{ tab, index }">
+      <div :class="[cur === index ? 'active' : '', 'list-tab']">{{ `tab:${tab.name}` }}</div>
     </template>
   </VueSlideTab>
 </template>
 
 ```
 
-scoped slot tab can get tab item data `tab` and select state `active` from scope
-
 ## props
 
 | Property | Type | Required? | Description 
 |:---|:---|:---|:---|
 | tabs | Array | yes | tab data array
-| itemWidth | Number | yes | tab item width 
-| current | Number | no | current tab index start from 0 
-| containerWidth | Number | no | tab container width 
+| current | Number | yes | current tab index start from 0 
+| dir | String | no | text direction 
 
 ## events
 
